@@ -1,0 +1,25 @@
+/* Custom style untuk widget Filament */
+.fi-wi-stats-overview-stat {
+    background-color: #2563EB; /* Ubah warna background sesuai kebutuhan */
+    color: #FFFFFF; /* Ubah warna teks */
+    border-radius: 0.75rem; /* Sesuaikan dengan kebutuhan */
+    padding: 1.5rem; /* Sesuaikan dengan kebutuhan */
+}
+
+/* Tambahkan gaya lain jika diperlukan */
+.fi-wi-stats-overview-stat h3 {
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.fi-wi-stats-overview-stat p {
+    font-size: 1rem;
+    color: #E5E7EB;
+}
+
+.fi-wi-stats-overview-stat button {
+    background-color: #374151;
+    color: #FFFFFF;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
