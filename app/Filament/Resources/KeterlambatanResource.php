@@ -11,12 +11,26 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Carbon\Carbon;
 
 class KeterlambatanResource extends Resource
 {
     protected static ?string $model = Keterlambatan::class;
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationLabel = 'List Keterlambatan';
+
+    public static function boot(): void {
+        parent::boot();
+        static::resetDataIfNewDay();
+    }
+
+    protected static function resetDataIfNewDay(): void {
+        $lastReset = cache()->get('keterlambatan_last_reset');
+        if (!$lastReset || Carbon::parse($lastReset)->isYesterday()) {
+            Keterlambatan::truncate();
+            cache()->put('keterlambatan_last_reset', Carbon::now()->format('Y-m-d'));
+        }
+    }
 
     public static function form(Form $form): Form {
         return $form
@@ -26,35 +40,11 @@ class KeterlambatanResource extends Resource
                     ->options(Siswa::all()->pluck('nama', 'id'))
                     ->required()
                     ->searchable(),
-                Forms\Components\DatePicker::make('tanggal')
-                    ->label('Tanggal Keterlambatan')
-                    ->required(),
-                Forms\Components\TimePicker::make('waktu')
-                    ->label('Waktu Keterlambatan')
-                    ->required(),
                 Forms\Components\Textarea::make('alasan')
                     ->label('Alasan')
                     ->nullable(),
             ]);
     }
-
-    // public static function table(Table $table): Table {
-    //     return $table
-    //         ->columns([
-    //             Tables\Columns\TextColumn::make('siswa.nama')->label('Nama Siswa'),
-    //             Tables\Columns\TextColumn::make('tanggal')->label('Tanggal Keterlambatan'),
-    //             Tables\Columns\TextColumn::make('waktu')->label('Waktu Keterlambatan'),
-    //             Tables\Columns\TextColumn::make('alasan')->label('Alasan')->limit(50),
-    //         ])
-    //         ->actions([
-    //             Tables\Actions\EditAction::make(),
-    //         ])
-    //         ->bulkActions([
-    //             Tables\Actions\BulkActionGroup::make([
-    //                 Tables\Actions\DeleteBulkAction::make(),
-    //             ]),
-    //         ]);
-    // }
 
     public static function table(Table $table): Table
 {
@@ -72,7 +62,8 @@ class KeterlambatanResource extends Resource
             Tables\Actions\BulkActionGroup::make([
                 Tables\Actions\DeleteBulkAction::make(),
             ]),
-        ]);
+        ])
+        ->headerActions([]);
 }
 
     public static function getRelations(): array
@@ -87,7 +78,7 @@ class KeterlambatanResource extends Resource
         return [
             'index' => Pages\ListKeterlambatans::route('/'),
             'create' => Pages\CreateKeterlambatan::route('/create'),
-            'edit' => Pages\EditKeterlambatan::route('/{record}/edit'),
+            // 'edit' => Pages\EditKeterlambatan::route('/{record}/edit'),
         ];
     }
 

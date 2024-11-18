@@ -45,6 +45,9 @@ class LaporanResource extends Resource
             ->actions([
                 // Tables\Actions\EditAction::make(),
                 // Tables\Actions\DeleteAction::make(),
+                Tables\Actions\Action::make('view')
+                ->label('View Detail')
+                // ->url(fn ($record) => route('filament.resources.laporan-resources.pages.detail-laporan', ['tanggal' => $record->tanggal]))
             ]);
     }
 
@@ -59,6 +62,7 @@ class LaporanResource extends Resource
     {
         return [
             'index' => Pages\ListLaporans::route('/'),
+            'detail' => Pages\DetailLaporan::route('/{tanggal}'),
             // 'create' => Pages\CreateLaporan::route('/create'),
             // 'edit' => Pages\EditLaporan::route('/{record}/edit'),
         ];

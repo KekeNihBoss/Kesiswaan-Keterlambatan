@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nis')->unique();
             $table->string('kelas');
             $table->string('foto')->nullable();
-            $table->integer('sp')->default(0);
+            $table->integer('jumlah_keterlambatan')->default(0);
             $table->timestamps();
         });
     }

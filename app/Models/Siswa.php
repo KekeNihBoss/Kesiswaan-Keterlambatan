@@ -12,7 +12,7 @@ class Siswa extends Model
         'nis',
         'kelas',
         'foto',
-        'sp',
+        'jumlah_keterlambatan',
     ];
    // app/Models/Siswa.php
 public function keterlambatan(){

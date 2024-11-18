@@ -10,10 +10,9 @@ class ListKeterlambatans extends ListRecords
 {
     protected static string $resource = KeterlambatanResource::class;
 
-    protected function getHeaderActions(): array
-    {
+    protected function getHeaderActions(): array {
         return [
-            Actions\CreateAction::make(),
+            // Actions\CreateAction::make(),
         ];
     }
 }
