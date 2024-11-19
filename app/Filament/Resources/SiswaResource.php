@@ -24,6 +24,7 @@ class SiswaResource extends Resource {
     protected static ?string $model = Siswa::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationLabel = 'Daftar Siswa';
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function getTitle(): string{
         return 'Data Siswa';
@@ -143,6 +144,7 @@ class SiswaResource extends Resource {
                         Forms\Components\Hidden::make('siswa_id')->default(fn ($record) => $record->id), // Add this line
                         Forms\Components\TextInput::make('tanggal')
                             ->label('Tanggal Keterlambatan')
+                            ->disabled()
                             ->default(Carbon::now('Asia/Jakarta')->format('Y-m-d'))
                             ->required(),
                         Forms\Components\TextInput::make('waktu')
@@ -151,6 +153,7 @@ class SiswaResource extends Resource {
                             ->required()
                             ->rules(['date_format:H:i'])  // Validasi untuk memastikan format waktu 24 jam
                             ->helperText('Format: HH:mm (Contoh: 14:30)')
+                            ->disabled()
                             ->extraAttributes([
                                 'inputmode' => 'numeric', // Menampilkan keyboard angka di perangkat mobile
                                 'pattern' => '[0-9]*', // Validasi untuk memastikan hanya angka
