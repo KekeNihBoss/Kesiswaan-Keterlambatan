@@ -141,22 +141,22 @@ class SiswaResource extends Resource {
                 Tables\Actions\Action::make('inputKeterlambatan')
                     ->label('Input Keterlambatan')
                     ->form([
-                        Forms\Components\Hidden::make('siswa_id')->default(fn ($record) => $record->id), // Add this line
+                        Forms\Components\Hidden::make('siswa_id')->default(fn ($record) => $record->id),
                         Forms\Components\TextInput::make('tanggal')
                             ->label('Tanggal Keterlambatan')
-                            ->disabled()
+                            ->readonly()
                             ->default(Carbon::now('Asia/Jakarta')->format('Y-m-d'))
                             ->required(),
                         Forms\Components\TextInput::make('waktu')
                             ->label('Waktu Keterlambatan')
-                            ->default(now('Asia/Jakarta')->format('H:i'))  // Menggunakan waktu sekarang (format 24 jam)
+                            ->default(now('Asia/Jakarta')->format('H:i'))
                             ->required()
-                            ->rules(['date_format:H:i'])  // Validasi untuk memastikan format waktu 24 jam
+                            ->rules(['date_format:H:i'])
                             ->helperText('Format: HH:mm (Contoh: 14:30)')
-                            ->disabled()
+                            ->readonly()
                             ->extraAttributes([
-                                'inputmode' => 'numeric', // Menampilkan keyboard angka di perangkat mobile
-                                'pattern' => '[0-9]*', // Validasi untuk memastikan hanya angka
+                                'inputmode' => 'numeric',
+                                'pattern' => '[0-9]*',
                             ]),
                         Forms\Components\Textarea::make('alasan')
                             ->label('Alasan')
@@ -172,11 +172,11 @@ class SiswaResource extends Resource {
                             return;
                         }
 
-                        $fullDateTime = Carbon::parse($data['tanggal'] . ' ' . $data['waktu']); //menggabungkan waktu dan tanggal
+                        $fullDateTime = Carbon::parse($data['tanggal'] . ' ' . $data['waktu']);
                         Keterlambatan::create([
                             'siswa_id' => $data['siswa_id'],
                             'tanggal' => $data['tanggal'],
-                            'waktu' => $fullDateTime, //menyimpan sebagai datetime
+                            'waktu' => $fullDateTime,
                             'alasan' => $data['alasan'] ?? null,
                         ]);
 
@@ -196,8 +196,6 @@ class SiswaResource extends Resource {
     public static function getPages(): array {
         return [
             'index' => Pages\ListSiswas::route('/'),
-            // 'create' => Pages\CreateSiswa::route('/create'),
-            // 'edit' => Pages\EditSiswa::route('/{record}/edit'),
         ];
     }
 
