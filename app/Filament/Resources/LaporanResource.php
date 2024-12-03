@@ -36,18 +36,15 @@ class LaporanResource extends Resource
                     ->label('Tanggal Keterlambatan')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jumlah_terlambat')
-                    ->label('Jumlah Siswa Terlambat')
-                    ->sortable(),
+                    ->label('Jumlah Siswa Terlambat'),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
-                Tables\Actions\Action::make('view')
+                Tables\Actions\ViewAction::make('view')
                 ->label('View Detail')
-                // ->url(fn ($record) => route('filament.resources.laporan-resources.pages.detail-laporan', ['tanggal' => $record->tanggal]))
+                ->color('success')
             ]);
     }
 

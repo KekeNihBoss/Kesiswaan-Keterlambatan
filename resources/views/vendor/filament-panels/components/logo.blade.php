@@ -15,7 +15,6 @@
 }
 
 </style>
-
 <div class="inline">
     <img src="{{ asset('/storage/images/logo.png') }}" alt="Logo" class="h-10">
     <h1>Web Kesiswaan</h1>
