@@ -4,8 +4,9 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LaporanResource\Widgets\LaporanOverview;
 use App\Filament\Resources\LaporanResource\Pages;
-use App\Models\laporan; // Model laporan menggunakan huruf kecil
+use App\Models\laporan;
 use App\Models\Keterlambatan;
+use App\Models\Siswa;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -29,24 +30,35 @@ class LaporanResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\TextColumn::make('tanggal')
-                    ->label('Tanggal Keterlambatan')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('jumlah_terlambat')
-                    ->label('Jumlah Siswa Terlambat'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make('view')
+{
+    return $table
+        ->columns([
+            Tables\Columns\TextColumn::make('tanggal')
+                ->label('Tanggal Keterlambatan')
+                ->sortable(),
+            Tables\Columns\TextColumn::make('jumlah_terlambat')
+                ->label('Jumlah Siswa Terlambat'),
+        ])
+        ->filters([
+            //
+        ])
+        ->actions([
+            Tables\Actions\ViewAction::make('view')
                 ->label('View Detail')
                 ->color('success')
-            ]);
-    }
+                ->modalHeading('Detail Keterlambatan')
+                ->modalContent(function ($record) {
+                    $keterlambatan = \App\Models\Keterlambatan::where('tanggal', $record->tanggal)
+                        ->with('siswa')
+                        ->get();
+                    return view('filament.resources.laporan.view-keterlambatan', [
+                        'tanggal' => $record->tanggal,
+                        'keterlambatan' => $keterlambatan,
+                    ]);
+                }),
+        ]);
+}
+
 
     public static function getRelations(): array
     {
@@ -98,5 +110,10 @@ class LaporanResource extends Resource
 
     public static function getNavigationGroup(): ?string {
         return 'Laporan';
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array{
+    $data['user_id'] = auth()->id();
+    return $data;
     }
 }
