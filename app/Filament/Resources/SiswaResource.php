@@ -19,6 +19,8 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TimePicker;
 use Carbon\Carbon;
 use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\DB;
+
 
 class SiswaResource extends Resource {
     protected static ?string $model = Siswa::class;
@@ -88,11 +90,11 @@ class SiswaResource extends Resource {
                         Forms\Components\TextInput::make('tanggal')
                             ->label('Tanggal Keterlambatan')
                             ->readonly()
-                            ->default(Carbon::now('Asia/Jakarta')->format('Y-m-d'))
+                            ->default(Carbon::now()->format('Y-m-d'))
                             ->required(),
                         Forms\Components\TextInput::make('waktu')
                             ->label('Waktu Keterlambatan')
-                            ->default(now('Asia/Jakarta')->format('H:i'))
+                            ->default(now()->format('H:i'))
                             ->required()
                             ->rules(['date_format:H:i'])
                             ->helperText('Format: HH:mm (Contoh: 14:30)')
@@ -131,7 +133,44 @@ class SiswaResource extends Resource {
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\BulkAction::make('inputKeterlambatan')
+                    ->label('Input Keterlambatan')
+                    ->form([
+                        Forms\Components\Hidden::make('siswa_id'),
+                        Forms\Components\TextInput::make('tanggal')
+                            ->label('Tanggal Keterlambatan')
+                            ->readonly()
+                            ->default(Carbon::now()->format('Y-m-d'))
+                            ->required(),
+                        Forms\Components\TextInput::make('waktu')
+                            ->label('Waktu Keterlambatan')
+                            ->default(now()->format('H:i:s'))
+                            ->required()
+                            ->rules(['date_format:H:i:s'])
+                            ->helperText('Format: HH:mm:ss (Contoh: 14:30.30)')
+                            ->readonly()
+                            ->extraAttributes([
+                                'inputmode' => 'numeric',
+                                'pattern' => '[0-9]*',
+                            ]),
+                        Forms\Components\Textarea::make('alasan')
+                            ->label('Alasan')
+                            ->nullable(),
+                    ])
+                    ->action(function (array $data, $records) {
+                        foreach ($records as $record) {
+                            DB::table('keterlambatans')->insert([
+                                'siswa_id' => $record->id,
+                                'tanggal' => $data['tanggal'],
+                                'waktu' => $data['waktu'],
+                                'alasan' => $data['alasan'],
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ]);
+                        }
+                    }),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->label('Hapus Terpilih'),
             ])
             ->filters([]);
     }
@@ -139,6 +178,7 @@ class SiswaResource extends Resource {
     public static function getPages(): array {
         return [
             'index' => Pages\ListSiswas::route('/'),
+            'edit' => Pages\EditSiswa::route('/{record}/edit'),
         ];
     }
 

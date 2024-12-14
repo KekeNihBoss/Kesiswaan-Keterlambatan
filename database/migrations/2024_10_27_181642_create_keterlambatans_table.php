@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('siswa_id')->constrained('siswas');
             $table->date('tanggal');
-            // $table->time('waktu')->change();
-            $table->timestamp('waktu')->nullable();
+            $table->time('waktu');
             $table->string('alasan')->nullable();
             $table->timestamps();
         });
