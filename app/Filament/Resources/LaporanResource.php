@@ -77,7 +77,7 @@ class LaporanResource extends Resource
         ];
     }
 
-    public static function simpanRekapMingguan(){
+    public static function simpanRekapHarian(){
         $tanggalMingguIni = Carbon::now()->startOfWeek();
         $tanggalAkhirMingguIni = Carbon::now()->endOfWeek();
         $keterlambatanData = Keterlambatan::whereBetween('tanggal', [

@@ -21,7 +21,7 @@ class ListLaporans extends ListRecords
     public function mount(): void
     {
         parent::mount();
-        LaporanResource::simpanRekapMingguan();
+        LaporanResource::simpanRekapHarian();
     }
     protected function canCreate(): bool{
     return false;

@@ -32,7 +32,6 @@ class SiswaResource extends Resource {
         return 'Data Siswa';
     }
 
-
     public static function form(Form $form): Form {
         return $form
             ->schema([
@@ -179,6 +178,7 @@ class SiswaResource extends Resource {
         return [
             'index' => Pages\ListSiswas::route('/'),
             'edit' => Pages\EditSiswa::route('/{record}/edit'),
+            'create' => Pages\CreateSiswa::route('/create'),
         ];
     }
 

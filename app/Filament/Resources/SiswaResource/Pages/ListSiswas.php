@@ -19,10 +19,15 @@ class ListSiswas extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\CreateAction::make()
+                ->label('Siswa Baru')
+            ,
             Actions\Action::make('importSiswa')
                 ->label('Impor Data Siswa')
                 ->requiresConfirmation()
                 ->modalHeading('Impor Data Siswa')
+                ->modalDescription('`')
+                ->color('success')
                 ->form([
                     Forms\Components\FileUpload::make('file')
                         ->label('Pilih File Excel')
@@ -57,6 +62,6 @@ class ListSiswas extends ListRecords
                             ->send();
                     }
                 }),
-        ];
+            ];
     }
 }
