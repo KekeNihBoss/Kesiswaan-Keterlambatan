@@ -80,6 +80,31 @@ class SiswaResource extends Resource {
 
             ])
             ->actions([
+                Action::make('updateStatus')
+                ->label('Sudah Dipanggil?')
+                ->action(function ($record) {
+                    if ($record->keterlambatan()->count() >= 3) {
+                        $record->keterlambatan()->delete();
+
+                        Notification::make()
+                            ->title('Status Diperbarui')
+                            ->body('Nama siswa telah dipulihkan ke status normal.')
+                            ->success()
+                            ->send();
+                    } else {
+                        Notification::make()
+                            ->title('Gagal')
+                            ->body('Siswa belum mencapai 3 keterlambatan.')
+                            ->danger()
+                            ->send();
+                    }
+                })
+                ->visible(function ($record) {
+                    return $record->keterlambatan()->count() >= 3;
+                })
+                ->requiresConfirmation()
+                ->color('success'),
+
                 Tables\Actions\Action::make('inputKeterlambatan')
                     ->label('Input Keterlambatan')
                     ->form([
@@ -105,6 +130,7 @@ class SiswaResource extends Resource {
                             ->nullable(),
                     ])
                     ->action(function (array $data) {
+
                         if (empty($data['siswa_id'])) {
                             Notification::make()
                                 ->title('Gagal')
