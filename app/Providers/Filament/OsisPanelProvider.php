@@ -1,13 +1,7 @@
 <?php
 
 namespace App\Providers\Filament;
-// Custom Widgets
-use App\Filament\Resources\LaporanResource\Widgets\LaporanOverview;
-use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-// use App\Filament\Resources\LaporanResource\Widgets\LaporanOverview;
 
-
-// Default
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -23,32 +17,26 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-// use BezhanSalleh\FilamentShield\Resources\RoleResource;
-// use BezhanSalleh\FilamentShield\Resources\PermissionResource;
 
-class AdminPanelProvider extends PanelProvider
+class OsisPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->login()
+            ->id('osis')
+            ->path('osis')
             ->colors([
-                'primary' => Color::Sky,
+                'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverResources(in: app_path('Filament/Osis/Resources'), for: 'App\\Filament\\Osis\\Resources')
+            ->discoverPages(in: app_path('Filament/Osis/Pages'), for: 'App\\Filament\\Osis\\Pages')
             ->pages([
-                // Pages\Dashboard::class,
+                Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Osis/Widgets'), for: 'App\\Filament\\Osis\\Widgets')
             ->widgets([
-                // Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
-                LaporanOverview::class,
-
+                Widgets\AccountWidget::class,
+                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -61,15 +49,8 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
-            ->plugins([
-                FilamentShieldPlugin::make(),
-            ])
             ->authMiddleware([
                 Authenticate::class,
             ]);
-            // ->resources([
-            //     RoleResource::class,
-            //     PermissionResource::class,
-            // ]);
     }
 }
