@@ -27,10 +27,7 @@ class SiswaResource extends Resource {
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
     protected static ?string $navigationLabel = 'Daftar Siswa';
     protected static ?string $recordTitleAttribute = 'name';
-
-    public static function getTitle(): string{
-        return 'Data Siswa';
-    }
+    protected static ?string $title = 'Siswa';
 
     public static function form(Form $form): Form {
         return $form
@@ -69,9 +66,10 @@ class SiswaResource extends Resource {
             ->label('NIS')
             ->searchable(),
 
-        Tables\Columns\TextColumn::make('kelas')
+            Tables\Columns\TextColumn::make('kelas')
             ->label('Kelas')
-            ->sortable(),
+            ->sortable()
+            ->searchable(),
 
         Tables\Columns\TextColumn::make('jumlah_keterlambatan')
             ->label('Jumlah Keterlambatan')
