@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SiswaResource\Pages;
 use App\Models\Siswa;
+use App\Models\laporan;
+use App\Models\laporanmingguan;
 use App\Imports\SiswaImport;
 use App\Models\Keterlambatan;
 use Filament\Forms;
@@ -129,8 +131,33 @@ class SiswaResource extends Resource {
                             ->label('Alasan')
                             ->nullable(),
                     ])
-                    ->action(function (array $data) {
+                    // ->action(function (array $data) {
 
+                    //     if (empty($data['siswa_id'])) {
+                    //         Notification::make()
+                    //             ->title('Gagal')
+                    //             ->body('ID siswa tidak ditemukan!')
+                    //             ->danger()
+                    //             ->send();
+                    //         return;
+                    //     }
+
+                    //     $fullDateTime = Carbon::parse($data['tanggal'] . ' ' . $data['waktu']);
+                    //     Keterlambatan::create([
+                    //         'siswa_id' => $data['siswa_id'],
+                    //         'tanggal' => $data['tanggal'],
+                    //         'waktu' => $fullDateTime,
+                    //         'alasan' => $data['alasan'] ?? null,
+                    //     ]);
+
+                    //     Notification::make()
+                    //         ->title('Berhasil')
+                    //         ->body('Data keterlambatan berhasil disimpan!')
+                    //         ->success()
+                    //         ->send();
+                    // }),
+
+                    ->action(function (array $data) {
                         if (empty($data['siswa_id'])) {
                             Notification::make()
                                 ->title('Gagal')
@@ -139,21 +166,40 @@ class SiswaResource extends Resource {
                                 ->send();
                             return;
                         }
-
-                        $fullDateTime = Carbon::parse($data['tanggal'] . ' ' . $data['waktu']);
+                
+                        // Input ke tabel keterlambatan
                         Keterlambatan::create([
                             'siswa_id' => $data['siswa_id'],
                             'tanggal' => $data['tanggal'],
-                            'waktu' => $fullDateTime,
+                            'waktu' => $data['waktu'],
                             'alasan' => $data['alasan'] ?? null,
                         ]);
-
+                
+                        // Input atau update laporan harian
+                        Laporan::updateOrCreate(
+                            ['tanggal' => $data['tanggal']],
+                            ['jumlah_terlambat' => Keterlambatan::where('tanggal', $data['tanggal'])->count()]
+                        );
+                
+                        // Input atau update laporan mingguan
+                        $weekNumber = Carbon::parse($data['tanggal'])->weekOfYear;
+                        $year = Carbon::parse($data['tanggal'])->year;
+                
+                        LaporanMingguan::updateOrCreate(
+                            ['minggu_ke' => $weekNumber, 'tahun' => $year],
+                            ['jumlah_terlambat' => Keterlambatan::whereBetween('tanggal', [
+                                Carbon::now()->startOfWeek(),
+                                Carbon::now()->endOfWeek()
+                            ])->count()]
+                        );
+                
                         Notification::make()
                             ->title('Berhasil')
                             ->body('Data keterlambatan berhasil disimpan!')
                             ->success()
                             ->send();
                     }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkAction::make('inputKeterlambatan')

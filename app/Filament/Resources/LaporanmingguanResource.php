@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Carbon\Carbon;
 
 class LaporanmingguanResource extends Resource
 {
@@ -32,29 +33,43 @@ class LaporanmingguanResource extends Resource
     {
         return $table
         ->columns([
-            Tables\Columns\TextColumn::make('tanggal')
-                ->label('Tanggal Keterlambatan')
-                ->sortable(),
-            Tables\Columns\TextColumn::make('jumlah_terlambat')
-                ->label('Jumlah Siswa Terlambat'),
+            Tables\Columns\TextColumn::make('minggu_ke')->label('Minggu Ke'),
+            Tables\Columns\TextColumn::make('tahun')->label('Tahun'),
+            Tables\Columns\TextColumn::make('jumlah_terlambat')->label('Jumlah Terlambat'),
         ])
+        ->defaultSort('tahun', 'desc')
+        ->defaultSort('minggu_ke', 'desc')
+
+
         ->filters([
             //
         ])
         ->actions([
-            Tables\Actions\ViewAction::make('view')
-                ->label('View Detail')
-                ->color('success')
-                ->modalHeading('Detail Keterlambatan')
-                ->modalContent(function ($record) {
-                    $keterlambatan = \App\Models\Keterlambatan::where('tanggal', $record->tanggal)
-                        ->with('siswa')
-                        ->get();
-                    return view('filament.resources.laporan.view-keterlambatan', [
-                        'tanggal' => $record->tanggal,
-                        'keterlambatan' => $keterlambatan,
-                    ]);
-                }),
+    Tables\Actions\ViewAction::make('view')
+        ->label('View Detail')
+        ->color('success')
+        ->modalHeading('Detail Keterlambatan Mingguan')
+        ->modalContent(function ($record) {
+            // Hitung rentang tanggal berdasarkan minggu ke dan tahun
+            $startOfWeek = Carbon::now()
+                ->setISODate($record->tahun, $record->minggu_ke)
+                ->startOfWeek();
+            $endOfWeek = Carbon::now()
+                ->setISODate($record->tahun, $record->minggu_ke)
+                ->endOfWeek();
+
+            $keterlambatan = \App\Models\Keterlambatan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+                ->with('siswa')
+                ->get();
+
+            return view('filament.resources.laporan-mingguan.view-keterlambatan', [
+                'minggu_ke' => $record->minggu_ke,
+                'tahun' => $record->tahun,
+                'keterlambatan' => $keterlambatan,
+                'startOfWeek' => $startOfWeek->format('Y-m-d'),
+                'endOfWeek' => $endOfWeek->format('Y-m-d'),
+            ]);
+        }),
         ]);
 }
     public static function getRelations(): array

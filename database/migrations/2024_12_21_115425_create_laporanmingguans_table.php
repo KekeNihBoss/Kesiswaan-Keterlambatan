@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('laporanmingguans', function (Blueprint $table) {
             $table->id();
+            $table->integer('minggu_ke');
+            $table->integer('tahun');
+            $table->integer('jumlah_terlambat')->default(0);
+            $table->unique(['minggu_ke', 'tahun']);
             $table->timestamps();
         });
     }
