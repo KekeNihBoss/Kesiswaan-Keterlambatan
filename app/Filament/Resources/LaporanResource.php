@@ -19,7 +19,7 @@ class LaporanResource extends Resource
     protected static ?string $model = laporan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
-    protected static ?string $navigationLabel = 'Laporan';
+    protected static ?string $navigationLabel = 'Laporan harian';
 
     public static function form(Form $form): Form
     {
@@ -31,32 +31,32 @@ class LaporanResource extends Resource
 
     public static function table(Table $table): Table
 {
-    return $table
-        ->columns([
-            Tables\Columns\TextColumn::make('tanggal')
-                ->label('Tanggal Keterlambatan')
-                ->sortable(),
-            Tables\Columns\TextColumn::make('jumlah_terlambat')
-                ->label('Jumlah Siswa Terlambat'),
-        ])
-        ->filters([
-            //
-        ])
-        ->actions([
-            Tables\Actions\ViewAction::make('view')
-                ->label('View Detail')
-                ->color('success')
-                ->modalHeading('Detail Keterlambatan')
-                ->modalContent(function ($record) {
-                    $keterlambatan = \App\Models\Keterlambatan::where('tanggal', $record->tanggal)
-                        ->with('siswa')
-                        ->get();
-                    return view('filament.resources.laporan.view-keterlambatan', [
-                        'tanggal' => $record->tanggal,
-                        'keterlambatan' => $keterlambatan,
-                    ]);
-                }),
-        ]);
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('tanggal')
+                    ->label('Tanggal Keterlambatan')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('jumlah_terlambat')
+                    ->label('Jumlah Siswa Terlambat'),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make('view')
+                    ->label('View Detail')
+                    ->color('success')
+                    ->modalHeading('Detail Keterlambatan')
+                    ->modalContent(function ($record) {
+                        $keterlambatan = \App\Models\Keterlambatan::where('tanggal', $record->tanggal)
+                            ->with('siswa')
+                            ->get();
+                        return view('filament.resources.laporan.view-keterlambatan', [
+                            'tanggal' => $record->tanggal,
+                            'keterlambatan' => $keterlambatan,
+                        ]);
+                    }),
+            ]);
 }
 
 
