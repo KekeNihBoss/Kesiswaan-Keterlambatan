@@ -42,7 +42,63 @@ class LaporanmingguanResource extends Resource
 
 
         ->filters([
-            //
+            Tables\Filters\Filter::make('minggu_ke')
+                ->form([
+                    Forms\Components\TextInput::make('minggu_ke')
+                        ->label('Minggu Ke')
+                        ->numeric(),
+                ])
+                ->query(function (Builder $query, array $data) {
+                    return $query->when($data['minggu_ke'], fn($q) => $q->where('minggu_ke', $data['minggu_ke']));
+                }),
+
+            Tables\Filters\Filter::make('tahun')
+                ->form([
+                    Forms\Components\TextInput::make('tahun')
+                        ->label('Tahun')
+                        ->numeric(),
+                ])
+                ->query(function (Builder $query, array $data) {
+                    return $query->when($data['tahun'], fn($q) => $q->where('tahun', $data['tahun']));
+                }),
+
+            Tables\Filters\Filter::make('tanggal_range')
+                ->form([
+                    Forms\Components\DatePicker::make('start_date')->label('Tanggal Awal'),
+                    Forms\Components\DatePicker::make('end_date')->label('Tanggal Akhir'),
+                ])
+                ->query(function (Builder $query, array $data) {
+                    return $query
+                        ->when($data['start_date'] ?? null, fn($q) => $q->whereDate('tanggal', '>=', $data['start_date']))
+                        ->when($data['end_date'] ?? null, fn($q) => $q->whereDate('tanggal', '<=', $data['end_date']));
+                }),
+        ])
+        ->actions([
+            Tables\Actions\ViewAction::make('view')
+                ->label('View Detail')
+                ->color('success')
+                ->modalHeading('Detail Keterlambatan Mingguan')
+                ->modalContent(function ($record) {
+                    // Hitung rentang tanggal berdasarkan minggu ke dan tahun
+                    $startOfWeek = Carbon::now()
+                        ->setISODate($record->tahun, $record->minggu_ke)
+                        ->startOfWeek();
+                    $endOfWeek = Carbon::now()
+                        ->setISODate($record->tahun, $record->minggu_ke)
+                        ->endOfWeek();
+
+                    $keterlambatan = \App\Models\Keterlambatan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
+                        ->with('siswa')
+                        ->get();
+
+                    return view('filament.resources.laporan-mingguan.view-keterlambatan', [
+                        'minggu_ke' => $record->minggu_ke,
+                        'tahun' => $record->tahun,
+                        'keterlambatan' => $keterlambatan,
+                        'startOfWeek' => $startOfWeek->format('Y-m-d'),
+                        'endOfWeek' => $endOfWeek->format('Y-m-d'),
+                    ]);
+                }),
         ])
         ->actions([
     Tables\Actions\ViewAction::make('view')
