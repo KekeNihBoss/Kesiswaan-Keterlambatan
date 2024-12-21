@@ -9,6 +9,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListKeterlambatans extends ListRecords
 {
     protected static string $resource = KeterlambatanResource::class;
+    protected static ?string $title = 'List Keterlambatan';
 
     protected function getHeaderActions(): array {
         return [

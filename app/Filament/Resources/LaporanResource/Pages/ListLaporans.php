@@ -10,6 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListLaporans extends ListRecords
 {
     protected static string $resource = LaporanResource::class;
+    protected static ?string $title = 'Laporan Harian';
 
     protected function getActions(): array
     {
