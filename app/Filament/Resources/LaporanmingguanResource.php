@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Exports\LaporanExport;
 use App\Filament\Resources\LaporanmingguanResource\Pages;
 use App\Filament\Resources\LaporanmingguanResource\RelationManagers;
 use App\Models\Laporanmingguan;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanmingguanResource extends Resource
 {
@@ -74,33 +78,6 @@ class LaporanmingguanResource extends Resource
                 }),
         ])
         ->actions([
-            Tables\Actions\ViewAction::make('view')
-                ->label('View Detail')
-                ->color('success')
-                ->modalHeading('Detail Keterlambatan Mingguan')
-                ->modalContent(function ($record) {
-                    // Hitung rentang tanggal berdasarkan minggu ke dan tahun
-                    $startOfWeek = Carbon::now()
-                        ->setISODate($record->tahun, $record->minggu_ke)
-                        ->startOfWeek();
-                    $endOfWeek = Carbon::now()
-                        ->setISODate($record->tahun, $record->minggu_ke)
-                        ->endOfWeek();
-
-                    $keterlambatan = \App\Models\Keterlambatan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
-                        ->with('siswa')
-                        ->get();
-
-                    return view('filament.resources.laporan-mingguan.view-keterlambatan', [
-                        'minggu_ke' => $record->minggu_ke,
-                        'tahun' => $record->tahun,
-                        'keterlambatan' => $keterlambatan,
-                        'startOfWeek' => $startOfWeek->format('Y-m-d'),
-                        'endOfWeek' => $endOfWeek->format('Y-m-d'),
-                    ]);
-                }),
-        ])
-        ->actions([
     Tables\Actions\ViewAction::make('view')
         ->label('View Detail')
         ->color('success')
@@ -126,6 +103,11 @@ class LaporanmingguanResource extends Resource
                 'endOfWeek' => $endOfWeek->format('Y-m-d'),
             ]);
         }),
+        Tables\Actions\ButtonAction::make('Export')
+                    ->label('Export to Excel')
+                    ->icon('heroicon-s-arrow-down-tray') // Ikon dari Heroicons
+                    ->color('success')
+                    ->action(fn () => Excel::download(new LaporanExport, 'laporan.xlsx')),
         ]);
 }
     public static function getRelations(): array

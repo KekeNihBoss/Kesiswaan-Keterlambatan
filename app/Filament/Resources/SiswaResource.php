@@ -131,31 +131,6 @@ class SiswaResource extends Resource {
                             ->label('Alasan')
                             ->nullable(),
                     ])
-                    // ->action(function (array $data) {
-
-                    //     if (empty($data['siswa_id'])) {
-                    //         Notification::make()
-                    //             ->title('Gagal')
-                    //             ->body('ID siswa tidak ditemukan!')
-                    //             ->danger()
-                    //             ->send();
-                    //         return;
-                    //     }
-
-                    //     $fullDateTime = Carbon::parse($data['tanggal'] . ' ' . $data['waktu']);
-                    //     Keterlambatan::create([
-                    //         'siswa_id' => $data['siswa_id'],
-                    //         'tanggal' => $data['tanggal'],
-                    //         'waktu' => $fullDateTime,
-                    //         'alasan' => $data['alasan'] ?? null,
-                    //     ]);
-
-                    //     Notification::make()
-                    //         ->title('Berhasil')
-                    //         ->body('Data keterlambatan berhasil disimpan!')
-                    //         ->success()
-                    //         ->send();
-                    // }),
 
                     ->action(function (array $data) {
                         if (empty($data['siswa_id'])) {
@@ -176,7 +151,7 @@ class SiswaResource extends Resource {
                         ]);
                 
                         // Input atau update laporan harian
-                        Laporan::updateOrCreate(
+                        laporan::updateOrCreate(
                             ['tanggal' => $data['tanggal']],
                             ['jumlah_terlambat' => Keterlambatan::where('tanggal', $data['tanggal'])->count()]
                         );
