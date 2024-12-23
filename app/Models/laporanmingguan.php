@@ -10,5 +10,6 @@ class laporanmingguan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['minggu_ke', 'tahun', 'jumlah_terlambat'];
+    protected $table = 'laporanmingguans';
+    protected $fillable = ['tanggal', 'minggu_ke', 'tahun', 'jumlah_terlambat'];
 }

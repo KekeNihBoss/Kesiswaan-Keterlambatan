@@ -6,6 +6,8 @@ use App\Exports\LaporanExport;
 use App\Filament\Resources\LaporanmingguanResource\Pages;
 use App\Filament\Resources\LaporanmingguanResource\RelationManagers;
 use App\Models\Laporanmingguan;
+use App\Models\Keterlambatan;
+use App\Models\Siswa;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -45,37 +47,28 @@ class LaporanmingguanResource extends Resource
         ->defaultSort('minggu_ke', 'desc')
 
 
-        ->filters([
-            Tables\Filters\Filter::make('minggu_ke')
-                ->form([
-                    Forms\Components\TextInput::make('minggu_ke')
-                        ->label('Minggu Ke')
-                        ->numeric(),
-                ])
-                ->query(function (Builder $query, array $data) {
-                    return $query->when($data['minggu_ke'], fn($q) => $q->where('minggu_ke', $data['minggu_ke']));
-                }),
+            ->filters([
+                Tables\Filters\Filter::make('minggu_ke')
+                    ->form([
+                        Forms\Components\TextInput::make('minggu_ke')
+                            ->label('Minggu Ke')
+                            ->numeric(),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query->when($data['minggu_ke'], fn($q) => $q->where('minggu_ke', $data['minggu_ke']));
+                    }),
 
-            Tables\Filters\Filter::make('tahun')
-                ->form([
-                    Forms\Components\TextInput::make('tahun')
-                        ->label('Tahun')
-                        ->numeric(),
-                ])
-                ->query(function (Builder $query, array $data) {
-                    return $query->when($data['tahun'], fn($q) => $q->where('tahun', $data['tahun']));
-                }),
+                Tables\Filters\Filter::make('tahun')
+                    ->form([
+                        Forms\Components\TextInput::make('tahun')
+                            ->label('Tahun')
+                            ->numeric(),
+                    ])
+                    ->query(function (Builder $query, array $data) {
+                        return $query->when($data['tahun'], fn($q) => $q->where('tahun', $data['tahun']));
+                    }),
 
-            Tables\Filters\Filter::make('tanggal_range')
-                ->form([
-                    Forms\Components\DatePicker::make('start_date')->label('Tanggal Awal'),
-                    Forms\Components\DatePicker::make('end_date')->label('Tanggal Akhir'),
-                ])
-                ->query(function (Builder $query, array $data) {
-                    return $query
-                        ->when($data['start_date'] ?? null, fn($q) => $q->whereDate('tanggal', '>=', $data['start_date']))
-                        ->when($data['end_date'] ?? null, fn($q) => $q->whereDate('tanggal', '<=', $data['end_date']));
-                }),
+                    
         ])
         ->actions([
     Tables\Actions\ViewAction::make('view')
@@ -103,6 +96,8 @@ class LaporanmingguanResource extends Resource
                 'endOfWeek' => $endOfWeek->format('Y-m-d'),
             ]);
         }),
+
+        
         Tables\Actions\ButtonAction::make('Export')
                     ->label('Export to Excel')
                     ->icon('heroicon-s-arrow-down-tray') // Ikon dari Heroicons

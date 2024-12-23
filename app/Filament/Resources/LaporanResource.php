@@ -13,6 +13,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Carbon\Carbon;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -43,9 +45,22 @@ class LaporanResource extends Resource
             Tables\Columns\TextColumn::make('jumlah_terlambat')
                 ->label('Jumlah Siswa Terlambat'),
         ])
-            ->filters([
-
-            ])
+        
+        ->filters([
+            // Filter Berdasarkan Tanggal
+            Filter::make('tanggal')
+                ->label('Filter Berdasarkan Tanggal')
+                ->form([
+                    Forms\Components\DatePicker::make('tanggal')
+                        ->label('Pilih Tanggal')
+                        ->required(),
+                ])
+                ->query(function ($query, array $data) {
+                    if (!empty($data['tanggal'])) {
+                        $query->whereDate('tanggal', $data['tanggal']);
+                    }
+                }),
+        ])
         ->actions([
             Tables\Actions\ViewAction::make('view')
                 ->label('View Detail')
@@ -60,6 +75,8 @@ class LaporanResource extends Resource
                         'keterlambatan' => $keterlambatan,
                     ]);
                 }),
+
+
                 Tables\Actions\ButtonAction::make('Export')
                     ->label('Export to Excel')
                     ->icon('heroicon-s-arrow-down-tray') // Ikon dari Heroicons
@@ -81,8 +98,8 @@ class LaporanResource extends Resource
         return [
             'index' => Pages\ListLaporans::route('/'),
             'detail' => Pages\DetailLaporan::route('/{tanggal}'),
-            // 'create' => Pages\CreateLaporan::route('/create'),
-            // 'edit' => Pages\EditLaporan::route('/{record}/edit'),
+            'create' => Pages\CreateLaporan::route('/create'),
+            'edit' => Pages\EditLaporan::route('/{record}/edit'),
         ];
     }
 
