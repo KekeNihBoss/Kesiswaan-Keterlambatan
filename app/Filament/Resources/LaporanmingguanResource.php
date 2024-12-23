@@ -6,8 +6,6 @@ use App\Exports\LaporanExport;
 use App\Filament\Resources\LaporanmingguanResource\Pages;
 use App\Filament\Resources\LaporanmingguanResource\RelationManagers;
 use App\Models\Laporanmingguan;
-use App\Models\Keterlambatan;
-use App\Models\Siswa;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -116,7 +114,7 @@ class LaporanmingguanResource extends Resource
     public static function getNavigationGroup(): ?string {
         return 'Laporan';
     }
-    
+
     public static function getPages(): array
     {
         return [

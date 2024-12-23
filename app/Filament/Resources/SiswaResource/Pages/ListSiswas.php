@@ -15,13 +15,12 @@ use Illuminate\Support\Facades\Log;
 class ListSiswas extends ListRecords
 {
     protected static string $resource = SiswaResource::class;
+    protected static ?string $title = 'Daftar Siswa';
 
-    protected function getHeaderActions(): array
-    {
+    protected function getHeaderActions(): array {
         return [
             Actions\CreateAction::make()
-                ->label('Siswa Baru')
-            ,
+                ->label('Siswa Baru'),
             Actions\Action::make('importSiswa')
                 ->label('Impor Data Siswa')
                 ->requiresConfirmation()
@@ -44,8 +43,7 @@ class ListSiswas extends ListRecords
                             ->danger()
                             ->send();
                         return;
-                    }
-                    try {
+                    } try {
                         $filePath = Storage::disk('public')->path('uploads/' . basename($data['file']));
                         Excel::import(new SiswaImport, $filePath);
                         Notification::make()
