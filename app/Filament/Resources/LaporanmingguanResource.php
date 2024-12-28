@@ -48,25 +48,61 @@ class LaporanmingguanResource extends Resource
                 ->sortable(),
         ])
         ->filters([
+            Tables\Filters\Filter::make('minggu_ke')
+            ->form([
+                Forms\Components\TextInput::make('minggu_ke')
+                    ->label('Minggu Ke')
+                    ->numeric(),
+            ])
+            ->query(function (Builder $query, array $data) {
+                return $query->when($data['minggu_ke'], fn($q) => $q->where('minggu_ke', $data['minggu_ke']));
+            }),
+
+        Tables\Filters\Filter::make('tahun')
+            ->form([
+                Forms\Components\TextInput::make('tahun')
+                    ->label('Tahun')
+                    ->numeric(),
+            ])
+            ->query(function (Builder $query, array $data) {
+                return $query->when($data['tahun'], fn($q) => $q->where('tahun', $data['tahun']));
+            }),
+
             // Filter Minggu
-            Filter::make('minggu')
-                ->label('Filter Berdasarkan Minggu')
-                ->form([
-                    Forms\Components\DatePicker::make('start_date')
-                        ->label('Mulai Minggu')
-                        ->required(),
-                    Forms\Components\DatePicker::make('end_date')
-                        ->label('Akhir Minggu')
-                        ->required(),
-                ])
-                ->query(function (Builder $query, array $data) {
-                    if ($data['start_date'] && $data['end_date']) {
-                        $query->whereBetween('tanggal', [
-                            Carbon::parse($data['start_date']),
-                            Carbon::parse($data['end_date']),
-                        ]);
-                    }
-                }),
+            Tables\Filters\Filter::make('rentang_minggu')
+            ->label('Filter Berdasarkan Rentang Minggu')
+            ->form([
+                Forms\Components\DatePicker::make('start_date')
+                    ->label('Tanggal Awal')
+                    ->placeholder(fn ($state): string => Carbon::now()->startOfYear()->format('Y-m-d')),
+                Forms\Components\DatePicker::make('end_date')
+                    ->label('Tanggal Akhir')
+                    ->placeholder(fn ($state): string => Carbon::now()->format('Y-m-d')),
+            ])
+            
+            ->query(function (Builder $query, array $data): Builder {
+                return $query
+                    ->when(
+                        $data['start_date'] ?? null,
+                        fn (Builder $query, $date): Builder => $query->whereDate('start_of_week', '>=', $date),
+                    )
+                    ->when(
+                        $data['end_date'] ?? null,
+                        fn (Builder $query, $date): Builder => $query->whereDate('end_of_week', '<=', $date),
+                    );
+            })
+            ->indicateUsing(function (array $data): array {
+                $indicators = [];
+                if ($data['start_date'] ?? null) {
+                    $indicators['start_date'] = 'Tanggal mulai: ' . Carbon::parse($data['start_date'])->toFormattedDateString();
+                }
+                if ($data['end_date'] ?? null) {
+                    $indicators['end_date'] = 'Tanggal akhir: ' . Carbon::parse($data['end_date'])->toFormattedDateString();
+                }
+                return $indicators;
+            }),
+        
+        
         ])
         ->defaultSort('tahun', 'desc')
         ->defaultSort('minggu_ke', 'desc')
