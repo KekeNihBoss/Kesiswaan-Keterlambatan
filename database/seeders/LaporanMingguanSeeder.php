@@ -21,7 +21,7 @@ class LaporanMingguanSeeder extends Seeder
 
             LaporanMingguan::create([
                 'minggu_ke' => $week,
-                'tahun' => 2024,
+                'tahun' => 2025,
                 'jumlah_terlambat' => rand(0, 50), // Data acak, sesuaikan dengan kebutuhan
                 'tanggal' => $startOfWeek->format('Y-m-d'),
             ]);
