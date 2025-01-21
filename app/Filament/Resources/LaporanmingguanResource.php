@@ -39,9 +39,12 @@ class LaporanmingguanResource extends Resource
     {
         return $table
         ->columns([
-            Tables\Columns\TextColumn::make('minggu_ke')->label('Minggu Ke'),
-            Tables\Columns\TextColumn::make('tahun')->label('Tahun'),
-            Tables\Columns\TextColumn::make('jumlah_terlambat')->label('Jumlah Terlambat'),
+            Tables\Columns\TextColumn::make('minggu_ke')
+            ->label('Minggu Ke'),
+            Tables\Columns\TextColumn::make('tahun')
+            ->label('Tahun'),
+            Tables\Columns\TextColumn::make('jumlah_terlambat')
+            ->label('Jumlah Terlambat'),
             Tables\Columns\TextColumn::make('start_of_week')
                 ->label('Tanggal Awal Minggu')
                 ->sortable(),
@@ -80,7 +83,6 @@ class LaporanmingguanResource extends Resource
     
     ->defaultSort('tahun', 'desc')
     ->defaultSort('minggu_ke', 'desc')
-    
 
         ->actions([
             Tables\Actions\ViewAction::make('view')

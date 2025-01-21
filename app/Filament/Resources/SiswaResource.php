@@ -113,7 +113,7 @@ class SiswaResource extends Resource {
                         Forms\Components\Hidden::make('siswa_id')->default(fn ($record) => $record->id),
                         Forms\Components\TextInput::make('tanggal')
                             ->label('Tanggal Keterlambatan')
-                            ->readonly()
+                            // ->readonly()
                             ->default(Carbon::now()->format('Y-m-d'))
                             ->required(),
                         Forms\Components\TextInput::make('waktu')

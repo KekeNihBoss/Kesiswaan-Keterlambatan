@@ -44,6 +44,7 @@ class LaporanResource extends Resource
                 ->sortable(),
             Tables\Columns\TextColumn::make('jumlah_terlambat')
                 ->label('Jumlah Siswa Terlambat'),
+                
         ])
         
         ->filters([

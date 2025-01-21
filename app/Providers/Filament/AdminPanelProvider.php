@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 // Custom Widgets
 use App\Filament\Resources\LaporanResource\Widgets\LaporanOverview;
+
 // use App\Filament\Resources\LaporanResource\Widgets\LaporanOverview;
 
 
@@ -32,8 +33,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->spa()
+            ->topNavigation()
             ->colors([
-                'primary' => Color::Sky,
+                'danger' => Color::Rose,
+                'gray' => Color::Gray,
+                'info' => Color::Blue,
+                'primary' => Color::Indigo,
+                'success' => Color::Emerald,
+                'warning' => Color::Orange,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -45,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
                 LaporanOverview::class,
+                
 
             ])
             ->middleware([
