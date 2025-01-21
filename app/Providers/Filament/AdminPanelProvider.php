@@ -1,13 +1,7 @@
 <?php
 
 namespace App\Providers\Filament;
-// Custom Widgets
 use App\Filament\Resources\LaporanResource\Widgets\LaporanOverview;
-
-// use App\Filament\Resources\LaporanResource\Widgets\LaporanOverview;
-
-
-// Default
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -53,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
                 LaporanOverview::class,
-                
+
 
             ])
             ->middleware([

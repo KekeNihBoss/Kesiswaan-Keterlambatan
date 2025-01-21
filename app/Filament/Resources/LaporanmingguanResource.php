@@ -5,7 +5,7 @@ namespace App\Filament\Resources;
 use App\Exports\LaporanExport;
 use App\Filament\Resources\LaporanmingguanResource\Pages;
 use App\Filament\Resources\LaporanmingguanResource\RelationManagers;
-use App\Models\Laporanmingguan;
+use App\Models\laporanmingguan;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -80,7 +80,7 @@ class LaporanmingguanResource extends Resource
             );
     })
 ])
-    
+
     ->defaultSort('tahun', 'desc')
     ->defaultSort('minggu_ke', 'desc')
 
@@ -93,11 +93,11 @@ class LaporanmingguanResource extends Resource
                 $endOfWeek = Carbon::now()
                     ->setISODate($record->tahun, $record->minggu_ke)
                     ->endOfWeek();
-        
+
                 $keterlambatan = \App\Models\Keterlambatan::whereBetween('tanggal', [$startOfWeek, $endOfWeek])
                     ->with('siswa')
                     ->get();
-        
+
                 return view('filament.resources.laporan-mingguan.view-keterlambatan', [
                     'minggu_ke' => $record->minggu_ke,
                     'tahun' => $record->tahun,
@@ -106,9 +106,9 @@ class LaporanmingguanResource extends Resource
                     'endOfWeek' => $endOfWeek->format('Y-m-d'),
                 ]);
             }),
-        
 
-        
+
+
         Tables\Actions\ButtonAction::make('Export')
                     ->label('Export to Excel')
                     ->icon('heroicon-s-arrow-down-tray') // Ikon dari Heroicons
